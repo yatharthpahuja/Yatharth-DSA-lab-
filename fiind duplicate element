@@ -1,0 +1,59 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int data;
+    node* next;
+};
+
+int main() {
+
+    // Creating the linked list
+    node* head = new node{1, NULL};
+    head->next = new node{2, NULL};
+    head->next->next = new node{3, NULL};
+    head->next->next->next = new node{2, NULL};
+    head->next->next->next->next = new node{4, NULL};
+    head->next->next->next->next->next = new node{4, NULL};
+    head->next->next->next->next->next->next = new node{2, NULL};
+
+    node* temp1 = head;
+
+    cout << "Duplicate elements: ";
+
+    while (temp1 != NULL) {
+
+        node* temp2 = temp1->next;
+        bool duplicate = false;
+
+        while (temp2 != NULL) {
+
+            if (temp1->data == temp2->data) {
+                duplicate = true;
+                break;
+            }
+
+            temp2 = temp2->next;
+        }
+
+        // Check if this value was already printed
+        node* check = head;
+        bool alreadyPrinted = false;
+
+        while (check != temp1) {
+            if (check->data == temp1->data) {
+                alreadyPrinted = true;
+                break;
+            }
+            check = check->next;
+        }
+
+        if (duplicate && !alreadyPrinted) {
+            cout << temp1->data << " ";
+        }
+
+        temp1 = temp1->next;
+    }
+
+    return 0;
+}
