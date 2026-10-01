@@ -1,0 +1,306 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node
+{
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+/* Create a new node */
+struct Node* createNode(int data)
+{
+    struct Node *newNode;
+
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+
+    if (newNode == NULL)
+    {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+
+    newNode->data = data;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+
+    return newNode;
+}
+
+/* Insert element at the end */
+void insertEnd(int data)
+{
+    struct Node *newNode;
+    struct Node *temp;
+
+    newNode = createNode(data);
+
+    if (head == NULL)
+    {
+        head = newNode;
+        return;
+    }
+
+    temp = head;
+
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+/* Display the list */
+void display()
+{
+    struct Node *temp;
+
+    if (head == NULL)
+    {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    temp = head;
+
+    printf("\nDoubly Linked List:\n");
+
+    while (temp != NULL)
+    {
+        printf("%d", temp->data);
+
+        if (temp->next != NULL)
+        {
+            printf(" <-> ");
+        }
+
+        temp = temp->next;
+    }
+
+    printf("\n");
+}
+
+/* Insert before a given element */
+void insertBefore(int element, int newData)
+{
+    struct Node *temp;
+    struct Node *newNode;
+
+    temp = head;
+
+    while (temp != NULL && temp->data != element)
+    {
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        printf("\nElement %d not found.\n", element);
+        return;
+    }
+
+    newNode = createNode(newData);
+
+    newNode->next = temp;
+    newNode->prev = temp->prev;
+
+    if (temp->prev != NULL)
+    {
+        temp->prev->next = newNode;
+    }
+    else
+    {
+        head = newNode;
+    }
+
+    temp->prev = newNode;
+
+    printf("\n%d inserted before %d.\n", newData, element);
+}
+
+/* Insert after a given element */
+void insertAfter(int element, int newData)
+{
+    struct Node *temp;
+    struct Node *newNode;
+
+    temp = head;
+
+    while (temp != NULL && temp->data != element)
+    {
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        printf("\nElement %d not found.\n", element);
+        return;
+    }
+
+    newNode = createNode(newData);
+
+    newNode->prev = temp;
+    newNode->next = temp->next;
+
+    if (temp->next != NULL)
+    {
+        temp->next->prev = newNode;
+    }
+
+    temp->next = newNode;
+
+    printf("\n%d inserted after %d.\n", newData, element);
+}
+
+/* Insert between two elements */
+void insertBetween(int first, int second, int newData)
+{
+    struct Node *temp;
+    struct Node *newNode;
+
+    temp = head;
+
+    while (temp != NULL)
+    {
+        if (temp->data == first &&
+            temp->next != NULL &&
+            temp->next->data == second)
+        {
+            break;
+        }
+
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        printf("\n%d and %d are not adjacent elements.\n",
+               first, second);
+        return;
+    }
+
+    newNode = createNode(newData);
+
+    newNode->prev = temp;
+    newNode->next = temp->next;
+
+    temp->next->prev = newNode;
+    temp->next = newNode;
+
+    printf("\n%d inserted between %d and %d.\n",
+           newData, first, second);
+}
+
+/* Main function */
+int main()
+{
+    int n;
+    int data;
+    int choice;
+    int element;
+    int secondElement;
+    int newData;
+    int i;
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    if (n < 0)
+    {
+        printf("Invalid number of elements.\n");
+        return 0;
+    }
+
+    printf("Enter %d elements:\n", n);
+
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &data);
+        insertEnd(data);
+    }
+
+    display();
+
+    while (1)
+    {
+        printf("\n============================\n");
+        printf("       DOUBLY LINKED LIST\n");
+        printf("============================\n");
+        printf("1. Insert Before\n");
+        printf("2. Insert After\n");
+        printf("3. Insert Between\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
+        printf("============================\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+
+                printf("\nEnter the element before which you want to insert: ");
+                scanf("%d", &element);
+
+                printf("Enter the new element: ");
+                scanf("%d", &newData);
+
+                insertBefore(element, newData);
+                display();
+
+                break;
+
+            case 2:
+
+                printf("\nEnter the element after which you want to insert: ");
+                scanf("%d", &element);
+
+                printf("Enter the new element: ");
+                scanf("%d", &newData);
+
+                insertAfter(element, newData);
+                display();
+
+                break;
+
+            case 3:
+
+                printf("\nEnter the first element: ");
+                scanf("%d", &element);
+
+                printf("Enter the second element: ");
+                scanf("%d", &secondElement);
+
+                printf("Enter the new element: ");
+                scanf("%d", &newData);
+
+                insertBetween(element, secondElement, newData);
+                display();
+
+                break;
+
+            case 4:
+
+                display();
+
+                break;
+
+            case 5:
+
+                printf("\nProgram ended.\n");
+                return 0;
+
+            default:
+
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
